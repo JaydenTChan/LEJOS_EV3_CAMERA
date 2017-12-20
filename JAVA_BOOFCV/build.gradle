@@ -1,0 +1,51 @@
+apply plugin: 'idea'
+apply plugin: 'eclipse'
+apply plugin: 'java'
+apply plugin: 'maven'
+
+sourceCompatibility = 1.6
+
+repositories {
+    mavenCentral()
+    mavenLocal()
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src'
+        }
+        resources {
+            srcDir 'resources/src'
+        }
+    }
+
+    test {
+        java {
+            srcDir 'test'
+        }
+        resources {
+            srcDir 'resources/test'
+        }
+    }
+}
+
+dependencies {
+    ['recognition','WebcamCapture'].each { String a -> compile group: 'org.boofcv', name: a, version: '0.17' }
+}
+
+// Open a webcam and runs the object tracking example
+task webcamRun(dependsOn: [classes,testClasses] ) << {
+    javaexec {
+        main = "CAM_Tracker"
+        classpath = sourceSets.main.runtimeClasspath  + sourceSets.test.runtimeClasspath
+    }
+}
+
+idea {
+    project {
+        jdkName = '1.6 (64bit)'
+        languageLevel = '1.6'
+    }
+}
+
